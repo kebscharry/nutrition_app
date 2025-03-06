@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'food_items.dart';
+
 class MealDetails extends StatelessWidget {
   const MealDetails({super.key});
 
@@ -26,7 +28,9 @@ class MealDetails extends StatelessWidget {
                 color: Colors.white,
               ),
               child:
-                  IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back))),
+                  IconButton(onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=> FoodList()));
+                  }, icon: Icon(Icons.arrow_back))),
         ),
       ),
       body: Column(
