@@ -222,9 +222,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 label: 'Statistics',
                 color: Colors.purple[50]!,
                 iconColor: Colors.purple,
-                onTap: () {
-                  // TODO: Implement statistics screen
-                },
+                onTap: () => Navigator.pushNamed(context, '/statistics'),
               ),
             ),
           ],

@@ -8,6 +8,7 @@ import 'package:nutrition/screens/food_selection/portion_selection.dart';
 import 'package:nutrition/screens/food_selection/meal_timing.dart';
 import 'package:nutrition/screens/food_selection/dietary_goals.dart';
 import 'package:nutrition/screens/meal_planner/weekly_meal_planner_screen.dart';
+import 'package:nutrition/screens/statistics/statistics_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,8 +35,8 @@ class MyApp extends StatelessWidget {
         '/mealTiming': (context) => const MealTiming(),
         '/dietaryGoals': (context) => const DietaryGoals(),
         '/mealPlanner': (context) => const WeeklyMealPlannerScreen(),
-        '/waterTracking': (context) =>
-            const WaterTrackingScreen(), // Add this line
+        '/waterTracking': (context) => const WaterTrackingScreen(),
+        '/statistics': (context) => const StatisticsScreen(),
       },
     );
   }
