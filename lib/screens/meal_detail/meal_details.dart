@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:nutrition/models/meal.dart';
+import 'package:nutrition/models/meal_plan.dart';
 import 'package:nutrition/screens/meal_detail/ingredient_list_section.dart';
-import '../food_selection/food_items.dart';
 
 class MealDetails extends StatelessWidget {
-  const MealDetails({super.key});
+  final dynamic meal;
+
+  const MealDetails({super.key, required this.meal});
+
+  // Helper methods to handle both Meal and MealPlan types
+  String get name => meal is Meal ? meal.name : meal.mealName;
+  String get calories =>
+      meal is Meal ? "${meal.calories}" : meal.formattedCalories;
+  String get protein => meal is Meal ? meal.protein : meal.formattedProtein;
+  String get carbs => meal is Meal ? meal.carbs : meal.formattedCarbs;
+  List<Ingredient> get ingredients => meal is Meal
+      ? meal.ingredients
+      : (meal.ingredients as List<dynamic>)
+          .map((i) => Ingredient(
+                imagePath: "assets/food_plate.png",
+                title: i.toString(),
+                description: "Ingredient from meal plan",
+              ))
+          .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +43,7 @@ class MealDetails extends StatelessWidget {
             ),
             child: IconButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const FoodList()),
-                );
+                Navigator.pop(context);
               },
               icon: const Icon(Icons.arrow_back),
             ),
@@ -66,29 +82,18 @@ class MealDetails extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Mix Salad\nVegetables",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      _buildNutritionRow("240", "Calories", Colors.amber[50]),
-                      const SizedBox(height: 5),
-                      _buildNutritionRow("19gr", "Protein", Colors.blue[100]),
-                      const SizedBox(height: 5),
-                      _buildNutritionRow("5gr", "Carbs", Colors.green[50]),
+                      _buildNutritionRow(
+                          calories, "Calories", Colors.amber[50]),
+                      _buildNutritionRow(protein, "Protein", Colors.blue[100]),
+                      _buildNutritionRow(carbs, "Carbs", Colors.green[50]),
                     ],
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
-            // INGREDIENT LIST SECTION
-            const Expanded(
-              child: IngredientListSection(),
+            Expanded(
+              child: IngredientListSection(ingredients: ingredients),
             ),
           ],
         ),

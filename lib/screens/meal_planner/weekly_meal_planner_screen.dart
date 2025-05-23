@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutrition/screens/meal_detail/meal_details.dart';
 import '../../models/meal_plan.dart';
 import '../../services/meal_planner_service.dart';
 import 'add_meal_dialog.dart';
@@ -312,78 +313,88 @@ class _WeeklyMealPlannerScreenState extends State<WeeklyMealPlannerScreen> {
   }
 
   Widget _buildMealItem(MealPlan meal) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.brown[50],
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: const Icon(
-              Icons.restaurant,
-              color: Colors.brown,
-            ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MealDetails(meal: meal),
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  meal.mealName,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                if (meal.ingredients.isNotEmpty) ...[
-                  const SizedBox(height: 4),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.brown[50],
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: const Icon(
+                Icons.restaurant,
+                color: Colors.brown,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    meal.ingredients.join(', '),
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
+                    meal.mealName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
                   ),
-                ],
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    _buildNutritionChip(
-                      '🔥 ${meal.formattedCalories}',
-                      Colors.orange[50]!,
-                    ),
-                    const SizedBox(width: 8),
-                    _buildNutritionChip(
-                      '🥩 ${meal.formattedProtein}',
-                      Colors.red[50]!,
-                    ),
-                    const SizedBox(width: 8),
-                    _buildNutritionChip(
-                      '🌾 ${meal.formattedCarbs}',
-                      Colors.green[50]!,
-                    ),
-                    const SizedBox(width: 8),
-                    _buildNutritionChip(
-                      '🥑 ${meal.formattedFats}',
-                      Colors.yellow[50]!,
+                  if (meal.ingredients.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      meal.ingredients.join(', '),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      _buildNutritionChip(
+                        '🔥 ${meal.formattedCalories}',
+                        Colors.orange[50]!,
+                      ),
+                      const SizedBox(width: 8),
+                      _buildNutritionChip(
+                        '🥩 ${meal.formattedProtein}',
+                        Colors.red[50]!,
+                      ),
+                      const SizedBox(width: 8),
+                      _buildNutritionChip(
+                        '🌾 ${meal.formattedCarbs}',
+                        Colors.green[50]!,
+                      ),
+                      const SizedBox(width: 8),
+                      _buildNutritionChip(
+                        '🥑 ${meal.formattedFats}',
+                        Colors.yellow[50]!,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () => _deleteMeal(meal),
-          ),
-        ],
+            IconButton(
+              icon: const Icon(Icons.delete_outline),
+              onPressed: () => _deleteMeal(meal),
+            ),
+          ],
+        ),
       ),
     );
   }
