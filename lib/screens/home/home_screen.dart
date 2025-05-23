@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../widgets/nutrition_summary_card.dart';
 import '../../../widgets/meal_type_selector.dart';
 import '../../../widgets/meal_preview_card.dart';
+import 'dashboard_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 0;
   String selectedMeal = 'Breakfast';
   final String userName = 'Kaluna'; // Can be fetched from user data
 
@@ -47,6 +49,38 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          _buildHomeContent(),
+          const DashboardScreen(),
+        ],
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_outlined),
+            selectedIcon: Icon(Icons.dashboard),
+            label: 'Dashboard',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHomeContent() {
     return Scaffold(
       appBar: _buildAppBar(context),
       body: Padding(
@@ -95,6 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       actions: [
+        IconButton(
+          icon: const Icon(Icons.calendar_month),
+          onPressed: () => Navigator.pushNamed(context, '/mealPlanner'),
+          tooltip: 'Weekly Meal Planner',
+        ),
         Padding(
           padding: const EdgeInsets.only(right: 16.0),
           child: Container(

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 // A class to hold daily nutrition totals
 class MealPlanSummary {
   final int calories;

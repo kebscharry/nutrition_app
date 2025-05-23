@@ -70,6 +70,34 @@ class _WeeklyMealPlannerScreenState extends State<WeeklyMealPlannerScreen> {
     }
   }
 
+  Future<void> _deleteMeal(MealPlan meal) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Meal'),
+        content: Text('Are you sure you want to delete "${meal.mealName}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.red,
+            ),
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed ?? false) {
+      await _mealPlannerService.deleteMealPlan(meal.id);
+      _loadMealsForSelectedDate();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,6 +227,8 @@ class _WeeklyMealPlannerScreenState extends State<WeeklyMealPlannerScreen> {
   }
 
   Widget _buildMealTypeCard(String mealType) {
+    final meals = _mealsByType[mealType] ?? [];
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(
@@ -221,22 +251,22 @@ class _WeeklyMealPlannerScreenState extends State<WeeklyMealPlannerScreen> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.add_circle_outline),
-                  onPressed: () {
-                    // TODO: Navigate to meal selection for this type
-                  },
+                  onPressed: () => _showAddMealDialog(mealType),
                 ),
               ],
             ),
             const Divider(),
-            // Placeholder for meal items
-            _buildPlaceholderMeal(),
+            if (meals.isEmpty)
+              _buildEmptyState()
+            else
+              ...meals.map((meal) => _buildMealItem(meal)).toList(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildPlaceholderMeal() {
+  Widget _buildEmptyState() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -259,7 +289,7 @@ class _WeeklyMealPlannerScreenState extends State<WeeklyMealPlannerScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Add meal',
+                  'No meals added',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
@@ -267,7 +297,7 @@ class _WeeklyMealPlannerScreenState extends State<WeeklyMealPlannerScreen> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  'Plan your meals for a healthier lifestyle',
+                  'Tap + to add a meal to your plan',
                   style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey,
@@ -277,6 +307,97 @@ class _WeeklyMealPlannerScreenState extends State<WeeklyMealPlannerScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMealItem(MealPlan meal) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.brown[50],
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: const Icon(
+              Icons.restaurant,
+              color: Colors.brown,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  meal.mealName,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (meal.ingredients.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    meal.ingredients.join(', '),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    _buildNutritionChip(
+                      '🔥 ${meal.formattedCalories}',
+                      Colors.orange[50]!,
+                    ),
+                    const SizedBox(width: 8),
+                    _buildNutritionChip(
+                      '🥩 ${meal.formattedProtein}',
+                      Colors.red[50]!,
+                    ),
+                    const SizedBox(width: 8),
+                    _buildNutritionChip(
+                      '🌾 ${meal.formattedCarbs}',
+                      Colors.green[50]!,
+                    ),
+                    const SizedBox(width: 8),
+                    _buildNutritionChip(
+                      '🥑 ${meal.formattedFats}',
+                      Colors.yellow[50]!,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline),
+            onPressed: () => _deleteMeal(meal),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNutritionChip(String label, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(fontSize: 12),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nutrition/screens/home/home_screen.dart';
+import 'package:nutrition/screens/hydration/water_tracking_screen.dart';
 import 'package:nutrition/screens/meal_detail/meal_details.dart';
 import 'package:nutrition/screens/food_selection/food_items.dart';
 import 'package:nutrition/screens/food_selection/portion_selection.dart';
@@ -33,6 +34,8 @@ class MyApp extends StatelessWidget {
         '/mealTiming': (context) => const MealTiming(),
         '/dietaryGoals': (context) => const DietaryGoals(),
         '/mealPlanner': (context) => const WeeklyMealPlannerScreen(),
+        '/waterTracking': (context) =>
+            const WaterTrackingScreen(), // Add this line
       },
     );
   }
